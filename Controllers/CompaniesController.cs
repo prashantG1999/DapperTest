@@ -1,4 +1,5 @@
 ﻿using DapperTest.Contracts;
+using DapperTest.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DapperTest.Controllers
@@ -38,6 +39,20 @@ namespace DapperTest.Controllers
                     return NotFound();
 
                 return Ok(company);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCompany(CompanyForCreationDto company)
+        {
+            try
+            {
+                var createdCompany = await _companyRepo.CreateCompany(company);
+                return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
             }
             catch (Exception ex)
             {

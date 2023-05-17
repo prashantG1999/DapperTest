@@ -1,4 +1,5 @@
-﻿using DapperTest.Entities;
+﻿using DapperTest.Dto;
+using DapperTest.Entities;
 
 namespace DapperTest.Contracts
 {
@@ -6,5 +7,6 @@ namespace DapperTest.Contracts
     {
         public Task<IEnumerable<Company>> GetCompanies();
         public Task<Company> GetCompany(int id);
+        public Task<Company> CreateCompany(CompanyForCreationDto company);
     }
 }

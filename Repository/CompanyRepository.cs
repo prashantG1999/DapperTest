@@ -1,7 +1,9 @@
 ﻿using Dapper;
 using DapperTest.Context;
 using DapperTest.Contracts;
+using DapperTest.Dto;
 using DapperTest.Entities;
+using System.Data;
 
 namespace DapperTest.Repository
 {
@@ -37,5 +39,30 @@ namespace DapperTest.Repository
             }
         }
 
+        public async Task<Company> CreateCompany(CompanyForCreationDto company)
+        {
+            var query = "INSERT INTO Companies (Name, Address, Country) VALUES (@Name, @Address, @Country)" +
+                        "SELECT CAST(SCOPE_IDENTITY() as int)";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Name", company.Name, DbType.String);
+            parameters.Add("Address", company.Address, DbType.String);
+            parameters.Add("Country", company.Country, DbType.String);
+
+            using (var connection = _context.CreateConnection())
+            {
+                var id = await connection.QuerySingleAsync<int>(query, parameters);
+
+                var createdCompany = new Company
+                {
+                    Id = id,
+                    Name = company.Name,
+                    Address = company.Address,
+                    Country = company.Country
+                };
+
+                return createdCompany;
+            }
+        }
     }
 }
