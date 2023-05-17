@@ -70,7 +70,7 @@ namespace DapperTest.Controllers
                     return NotFound();
 
                 await _companyRepo.UpdateCompany(id, company);
-                return NoContent();
+                return Ok();
             }
             catch(Exception ex)
             {
@@ -85,10 +85,27 @@ namespace DapperTest.Controllers
             {
                 var dbCompany = await _companyRepo.GetCompany(id);
                 if (dbCompany == null)
-                    return NotFound();
+                    return Ok();
 
                 await _companyRepo.DeleteCompany(id);
                 return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("ByEmployeeId/{id}")]
+        public async Task<IActionResult> GetCompanyForEmployee(int id)
+        {
+            try
+            {
+                var company = await _companyRepo.GetCompanyByEmployeeId(id);
+                if (company == null)
+                    return NotFound();
+
+                return Ok(company);
             }
             catch (Exception ex)
             {
