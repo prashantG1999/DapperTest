@@ -64,5 +64,30 @@ namespace DapperTest.Repository
                 return createdCompany;
             }
         }
+
+        public async Task UpdateCompany(int id, CompanyForUpdateDto company)
+        {
+            var query = "UPDATE Companies SET Name = @Name, Address = @Address, Country = @Country WHERE ID = @Id";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id, DbType.Int32);
+            parameters.Add("Name", company.Name, DbType.String);
+            parameters.Add("Address", company.Address, DbType.String);
+            parameters.Add("Country", company.Country, DbType.String);
+
+            using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, parameters);
+            }
+        }
+
+        public async Task DeleteCompany(int id)
+        {
+            var query = "DELETE FROM Companies WHERE Id = @Id";
+            using (var connection = _context.CreateConnection())
+            {
+                await connection.ExecuteAsync(query, new { id });
+            }
+        }
     }
 }
